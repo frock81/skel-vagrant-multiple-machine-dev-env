@@ -1,0 +1,3 @@
+[submodule "provision/roles/frock81.ldap"]
+	path = provision/roles/frock81.ldap
+	url = https://github.com/frock81/ansible-role-ldap.git

@@ -13,9 +13,9 @@
           host: node1.ic.pcdf.gov.br
         - ip: 192.168.4.
           host: node2.ic.pcdf.gov.br
-  roles:
-    # - role: frock81.ntp
-    #   tags: ntp
-    # - role: geerlingguy.apache
-    # - role: geerlingguy.php
-    # - role: frock81.ldap
+  # roles:
+  #   - role: frock81.ntp
+  #     tags: ntp
+  #   - role: geerlingguy.apache
+  #   - role: geerlingguy.php
+  #   - role: frock81.ldap

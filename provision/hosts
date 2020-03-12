@@ -1,10 +1,13 @@
-controller01 ansible_connection=local
-node1     ansible_ssh_host=192.168.4. ansible_ssh_private_key_file=/vagrant/insecure_private_key
-node2     ansible_ssh_host=192.168.4. ansible_ssh_private_key_file=/vagrant/insecure_private_key
+; controller01 ansible_connection=local
+; node1     ansible_ssh_host=192.168.4. ansible_ssh_private_key_file=/vagrant/insecure_private_key
+; node2     ansible_ssh_host=192.168.4. ansible_ssh_private_key_file=/vagrant/insecure_private_key
 
 [nodeX_servers]
-node1
-node2
+node1.localdomain
+node2.localdomain
 
-[manager]
-controller01
+[nodeX_servers:vars]
+ansible_ssh_private_key_file=/vagrant/insecure_private_key
+
+[controller]
+controller01 ansible_connection=local

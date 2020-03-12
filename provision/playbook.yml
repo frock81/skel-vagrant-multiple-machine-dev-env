@@ -1,18 +1,22 @@
 ---
+- hosts: all
+  pre_tasks:
+    # Install needed packages to be managed by ansible.
+    - include_role:
+        name: robertdebock.bootstrap
+    # To facilitate name resolution (there are alternatives like using plugin)
+    - name: hosts file
+      lineinfile:
+        path: /etc/hosts
+        regexp: "^{{ item.ip }} "
+        line: "{{ item.ip }} {{ item.host }}"
+      with_items:
+        - ip: 192.168.4.
+          host: node1.localdomain
+        - ip: 192.168.4.
+          host: node2.localdomain
+
 - hosts: nodeX_servers
-  # pre_tasks:
-  #   - include_role:
-  #       name: frock81.ansible_bootstrap
-  #   - name: hosts file
-  #     lineinfile:
-  #       path: /etc/hosts
-  #       regexp: "^{{ item.ip }} "
-  #       line: "{{ item.ip }} {{ item.host }}"
-  #     with_items:
-  #       - ip: 192.168.4.
-  #         host: node1.ic.pcdf.gov.br
-  #       - ip: 192.168.4.
-  #         host: node2.ic.pcdf.gov.br
   # roles:
   #   - role: frock81.ntp
   #     tags: ntp

@@ -12,3 +12,10 @@ Steps:
 1. Update file `provision/host_vars/nodeX.yml`
 1. Update `provision/requirements.yml`
 1. Update `provision/playbook.yml`
+
+Other optional steps:
+
+- Put directive config.vm.synced_folder in Vagrantfile for web server projects.
+- Uncomment directive v.customize in Vagrantfile if you want to disable VT-x to use with KVM.
+- Uncomment python-mysqldb install in bootstrap.sh if ansible local provisioner uses mysql module.
+- Update config.vm.box in VagrantFile (defaults to ubuntu/bionic64)

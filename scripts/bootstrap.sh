@@ -1,32 +1,45 @@
 #!/bin/bash
 
+# Commands to be executed at the provisioner host (the one that will execute the
+# ansible-playbook command)
+
+# SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+ANSIBLE_PATH=/etc/ansible
+
 # To fix dpkg error in provisioning.
 export DEBIAN_FRONTEND=noninteractive
 
 # Avoid prompting questions.
 echo '* libraries/restart-without-asking boolean true' \
-  | debconf-set-selections
+  | sudo debconf-set-selections
 
 # Use recent packages.
 if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -1440)" ]; then
-  apt update --fix-missing && apt -yq upgrade
+  sudo apt update --fix-missing && apt -yq upgrade
 fi
 
 # In the first vagrant up, python wont be installed. We use this characteristic
 # to update apt sources file.
 if ! test -e /usr/bin/python; then
-  sed -i 's#http://archive.ubuntu.com#http://br.archive.ubuntu.com#g' \
+  sudo sed -i 's#http://archive.ubuntu.com#http://br.archive.ubuntu.com#g' \
     /etc/apt/sources.list
-  apt update
-  apt install -yq python-minimal
+  echo "Updating packages list"
+  sudo apt update
+  sudo echo "Installing python."
+  apt install -yq python-minimal python-pip
 fi
 
 # Install Ansible via Python PIP.
-test -e /usr/bin/pip || apt install -yq python-pip
-test -e /usr/bin/ansible-galaxy || pip install ansible
+echo "Installing Ansible via PIP"
+test -e /usr/bin/ansible-galaxy || sudo pip install ansible
 
 # Install required roles.
+echo "Installing required roles."
 ansible-galaxy install \
-    -r /vagrant/provision/requirements.yml \
-    -p /vagrant/provision/roles \
-    --ignore-errors
+    -r $ANSIBLE_PATH/requirements.yml \
+    -p $ANSIBLE_PATH/roles \
+    --ignore-errors \
+    --ignore-certs
+
+# Uncomment if mysql module related tasks are used in the controller.
+#dpkg-query -s python-mysqldb || sudo apt-get -yq install python-mysqldb

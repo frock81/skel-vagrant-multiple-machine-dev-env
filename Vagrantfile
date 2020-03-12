@@ -13,6 +13,10 @@ $node2_ip_address = "192.168.4."
 $controller_hostname = "controller"
 $controller_ip_address = "192.168.4."
 
+# Default for machines
+$vbox_cpu = 1
+$vbox_memory = 512
+
 # Sets guest environment variables.
 # @see https://github.com/hashicorp/vagrant/issues/7015
 $set_environment_variables = <<SCRIPT
@@ -29,8 +33,10 @@ Vagrant.configure("2") do |config|
   config.vm.define $node1_hostname do |machine|
     machine.vm.provider "virtualbox" do |vbox|
       vbox.name = $node1_hostname
-      vbox.memory = 512
-      vbox.cpus = 1
+      vbox.memory = $vbox_memory
+      vbox.cpus = $vbox_cpu
+      # Uncomment if you want to disable VT-x to use with KVM.
+      # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
     end
     machine.vm.hostname = $node1_hostname
     machine.vm.network "private_network", ip: $node1_ip_address
@@ -38,8 +44,10 @@ Vagrant.configure("2") do |config|
   config.vm.define $node2_hostname do |machine|
     machine.vm.provider "virtualbox" do |vbox|
       vbox.name = $node2_hostname
-      vbox.memory = 512
-      vbox.cpus = 1
+      vbox.memory = $vbox_memory
+      vbox.cpus = $vbox_cpu
+      # Uncomment if you want to disable VT-x to use with KVM.
+      # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
     end
     machine.vm.hostname = $node2_hostname
     machine.vm.network "private_network", ip: $node2_ip_address

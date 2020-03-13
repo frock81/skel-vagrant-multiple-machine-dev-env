@@ -75,6 +75,13 @@ Vagrant.configure("2") do |config|
     machine.vm.network "private_network", ip: $node2_ip_address
   end
   config.vm.define $controller_hostname do |machine|
+    machine.vm.provider "virtualbox" do |vbox|
+      vbox.name = $controller_hostname
+      vbox.memory = $vbox_memory
+      vbox.cpus = $vbox_cpu
+      vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
+    end
+    machine.vm.hostname = $controller_hostname
     machine.vm.network "private_network", ip: $controller_ip_address
     machine.vm.synced_folder "~/.ansible", "/tmp/ansible"
     machine.vm.provision "shell", inline: $set_environment_variables, \

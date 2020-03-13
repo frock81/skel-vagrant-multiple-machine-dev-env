@@ -26,6 +26,8 @@ export ANSIBLE_RETRY_FILES_ENABLED=0
 EOF
 SCRIPT
 
+VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
+
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
   config.ssh.private_key_path = "./insecure_private_key"
@@ -35,8 +37,18 @@ Vagrant.configure("2") do |config|
       vbox.name = $node1_hostname
       vbox.memory = $vbox_memory
       vbox.cpus = $vbox_cpu
+      
       # Uncomment if you want to disable VT-x to use with KVM.
       # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
+
+      # Uncoment to add more disks.
+      # file_to_disk = File.join(VAGRANT_ROOT, '.vagrant', 'node01.vdi')
+      # unless File.exist?(file_to_disk)
+      #   vbox.customize ['createhd', '--filename', file_to_disk, '--size', 500 * 1024]
+      # end
+      # vbox.customize ['storageattach', :id, '--storagectl',
+      #   'SCSI', '--port', 4, '--device', 0, '--type', 'hdd',
+      #   '--medium', file_to_disk]
     end
     machine.vm.hostname = $node1_hostname
     machine.vm.network "private_network", ip: $node1_ip_address
@@ -46,8 +58,18 @@ Vagrant.configure("2") do |config|
       vbox.name = $node2_hostname
       vbox.memory = $vbox_memory
       vbox.cpus = $vbox_cpu
+      
       # Uncomment if you want to disable VT-x to use with KVM.
       # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
+
+      # Uncoment to add more disks.
+      # file_to_disk = File.join(VAGRANT_ROOT, '.vagrant', 'node02.vdi')
+      # unless File.exist?(file_to_disk)
+      #   vbox.customize ['createhd', '--filename', file_to_disk, '--size', 500 * 1024]
+      # end
+      # vbox.customize ['storageattach', :id, '--storagectl',
+      #   'SCSI', '--port', 4, '--device', 0, '--type', 'hdd',
+      #   '--medium', file_to_disk]
     end
     machine.vm.hostname = $node2_hostname
     machine.vm.network "private_network", ip: $node2_ip_address

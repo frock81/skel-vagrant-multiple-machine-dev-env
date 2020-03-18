@@ -2,4 +2,4 @@
 *.log
 *.retry
 .DS_Store
-/provision/roles
+/ansible/roles

@@ -30,7 +30,7 @@ VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
 
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
-  config.ssh.private_key_path = "./insecure_private_key"
+  config.ssh.private_key_path = "./ansible/insecure_private_key"
   config.vm.box = "ubuntu/bionic64"
   config.vm.define $node1_hostname do |machine|
     machine.vm.provider "virtualbox" do |vbox|
@@ -84,12 +84,13 @@ Vagrant.configure("2") do |config|
     machine.vm.hostname = $controller_hostname
     machine.vm.network "private_network", ip: $controller_ip_address
     machine.vm.synced_folder "~/.ansible", "/tmp/ansible"
+    machine.vm.synced_folder "./ansible", "/etc/ansible"
     machine.vm.provision "shell", inline: $set_environment_variables, \
       run: "always"
     machine.vm.provision "shell", path: "scripts/bootstrap.sh"
     machine.vm.provision "ansible_local" do |ansible|
       ansible.install = false
-      ansible.provisioning_path = "/vagrant/provision"
+      ansible.provisioning_path = "/etc/ansible"
       ansible.playbook = "playbook.yml"
       ansible.inventory_path = "hosts"
       ansible.become = true

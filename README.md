@@ -10,7 +10,7 @@ Steps:
 1. Update `Vagrantfile` with node names and ip addresses
 1. Update `provision/hosts` with node names and ip addresses
 1. Update file `provision/host_vars/nodeX.yml`
-1. Update `provision/requirements.yml`
+1. Update `provision/requirements.yml` (don't do this when using submodules)
 1. Update `provision/playbook.yml`
 
 Other optional steps:

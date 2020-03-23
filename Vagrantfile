@@ -89,6 +89,7 @@ Vagrant.configure("2") do |config|
       run: "always"
     machine.vm.provision "shell", path: "scripts/bootstrap.sh"
     machine.vm.provision "ansible_local" do |ansible|
+      ansible.compatibility_mode = "2.0"
       ansible.install = false
       ansible.provisioning_path = "/etc/ansible"
       ansible.playbook = "playbook.yml"

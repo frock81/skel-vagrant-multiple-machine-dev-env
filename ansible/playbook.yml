@@ -1,25 +1,3 @@
 ---
-- hosts: all
-  pre_tasks:
-    # Install needed packages to be managed by ansible.
-    - include_role:
-        name: robertdebock.bootstrap
-    # To facilitate name resolution (there are alternatives like using plugin)
-    - name: hosts file
-      lineinfile:
-        path: /etc/hosts
-        regexp: "^{{ item.ip }} "
-        line: "{{ item.ip }} {{ item.host }}"
-      with_items:
-        - ip: 192.168.4.
-          host: node1.localdomain
-        - ip: 192.168.4.
-          host: node2.localdomain
-
-- hosts: nodeX_servers
-  # roles:
-  #   - role: frock81.ntp
-  #     tags: ntp
-  #   - role: geerlingguy.apache
-  #   - role: geerlingguy.php
-  #   - role: frock81.ldap
+- import_playbook: dev-only.yml
+- import_playbook: common.yml

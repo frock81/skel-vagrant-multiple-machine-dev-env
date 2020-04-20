@@ -85,7 +85,7 @@ Vagrant.configure("2") do |config|
     machine.vm.hostname = $controller_hostname
     machine.vm.network "private_network", ip: $controller_ip_address
     # Vault passwords in home dir in order to not leave the key together with
-    # the lock (use to synchronize projects with Dropbox).
+    # the lock (useful to synchronize projects inside Dropbox/Gdrive).
     machine.vm.synced_folder "~/.ansible_secret", \
       "/home/vagrant/.ansible_secret"
     machine.vm.synced_folder "ansible", "/etc/ansible"

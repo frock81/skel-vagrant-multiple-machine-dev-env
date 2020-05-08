@@ -2,7 +2,6 @@
 *.log
 *.retry
 .DS_Store
-/ansible/roles
 *.vdi
 *.bak
 secret-local.yml

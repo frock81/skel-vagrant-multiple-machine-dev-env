@@ -101,8 +101,7 @@ Vagrant.configure("2") do |config|
       ansible.inventory_path = "hosts-dev.ini"
       ansible.become = true
       ansible.limit = ENV['ANSIBLE_LIMIT'] ? ENV['ANSIBLE_LIMIT'] : "all"
-      ansible.vault_password_file = "/home/vagrant/.ansible_secret/vault_pass_\
-        insecure"
+      ansible.vault_password_file = "/home/vagrant/.ansible_secret/vault_pass_insecure"
       ansible.tags = ENV['ANSIBLE_TAGS']
       ansible.verbose = ENV['ANSIBLE_VERBOSE']
     end

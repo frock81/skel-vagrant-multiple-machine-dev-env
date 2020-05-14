@@ -6,11 +6,11 @@ $controller_hostname = "node-ctrl"
 $controller_ip_address = "192.168.4.51"
 
 # Node 1 config.
-$node1_hostname = "node01"
+$node1_hostname = "node-01"
 $node1_ip_address = "192.168.4.52"
 
 # Node 2 config.
-$node2_hostname = "node02"
+$node2_hostname = "node-02"
 $node2_ip_address = "192.168.4.53"
 
 # Default for machines

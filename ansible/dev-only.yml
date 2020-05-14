@@ -9,12 +9,12 @@
         regexp: "^{{ item.ip }} "
         line: "{{ item.ip }} {{ item.host }}"
       with_items:
-        - ip: 192.168.4.50
-          host: node-ctrl.localdomain
         - ip: 192.168.4.51
-          host: node01.localdomain
+          host: node-ctrl.localdomain
         - ip: 192.168.4.52
-          host: node02.localdomain
+          host: node-01.localdomain
+        - ip: 192.168.4.53
+          host: node-02.localdomain
         
     # Causes apt lock acquisition problems.
     - name: stop apt-daily service

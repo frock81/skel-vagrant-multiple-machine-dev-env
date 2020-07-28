@@ -1,21 +1,42 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Controller config.
-$controller_hostname = "node-ctrl"
-$controller_ip_address = "192.168.4.51"
+# The box to be used by Vagrant.
+VAGRANT_BOX = "ubuntu/bionic64"
 
-# Node 1 config.
-$node1_hostname = "node-01"
-$node1_ip_address = "192.168.4.52"
+# Number of CPUs allocated to the virtual machine instances.
+VM_CPUS = 2
 
-# Node 2 config.
-$node2_hostname = "node-02"
-$node2_ip_address = "192.168.4.53"
+# Total of RAM memory in megabytes allocated to the vm instances.
+VM_MEMORY = 2048
 
-# Default for machines
-$vbox_cpu = 2
-$vbox_memory = 2048
+# The prefix for the hostname and virtual machine name.
+INSTANCE_PREFIX = "node"
+
+# Start of the nodes. If 0 it will node-0, node-1 and so on. If 1 it will
+# be node-0, node-1...
+INSTANCE_START=1
+
+# The last instance index. Will determine the amount of nodes. The
+# default with INSTANCE_START=1 and INSTANCE_END=2 will give two nodes,
+# node-1 and node-2.
+INSTANCE_END = 2
+
+# The prefix for the IP address. The ip address for the machines will be
+# generated using the instance index and the prefix. So in the default
+# confing it will be 192.168.4.11 for node-1, 192.168.4.12 for node-2
+# and so on.
+IP_PREFIX = "192.168.4.1"
+
+# The virtual machine name and hostname for the controller machine, the
+# one that will provision the other with Ansible (manager). It is useful
+# for mixed environments that uses Linux, Windows, etc and makes it
+# unecessary to have Ansible installed in the machine running Vagrant.
+$controller_hostname = "#{INSTANCE_PREFIX}-ctrl"
+
+# The IP address for the controller machine. In the default config it
+# will be 192.168.4.10.
+$controller_ip_address = "#{IP_PREFIX}0"
 
 # Sets guest environment variables.
 # @see https://github.com/hashicorp/vagrant/issues/7015
@@ -31,54 +52,49 @@ VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
   config.ssh.private_key_path = "./ansible/insecure_private_key"
-  config.vm.box = "ubuntu/bionic64"
-  config.vm.define $node1_hostname do |machine|
-    machine.vm.provider "virtualbox" do |vbox|
-      vbox.name = $node1_hostname
-      vbox.memory = $vbox_memory
-      vbox.cpus = $vbox_cpu
-      
-      # Uncomment if you want to disable VT-x to use with KVM.
-      # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
+  config.vm.box = VAGRANT_BOX
 
-      # Uncoment to add more disks.
-      # file_to_disk = File.join(VAGRANT_ROOT, '.vagrant', 'node1-disk1.vdi')
-      # unless File.exist?(file_to_disk)
-      #   vbox.customize ['createhd', '--filename', file_to_disk, '--size', 500 * 1024]
-      # end
-      # vbox.customize ['storageattach', :id, '--storagectl',
-      #   'SCSI', '--port', 4, '--device', 0, '--type', 'hdd',
-      #   '--medium', file_to_disk]
-    end
-    machine.vm.hostname = $node1_hostname
-    machine.vm.network "private_network", ip: $node1_ip_address
-  end
-  config.vm.define $node2_hostname do |machine|
-    machine.vm.provider "virtualbox" do |vbox|
-      vbox.name = $node2_hostname
-      vbox.memory = $vbox_memory
-      vbox.cpus = $vbox_cpu
-      
-      # Uncomment if you want to disable VT-x to use with KVM.
-      # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
+  (INSTANCE_START..INSTANCE_END).each do |i|
+    config.vm.define "#{INSTANCE_PREFIX}-#{i}" do |machine|
+      machine.vm.provider "virtualbox" do |vbox|
+        vbox.name = "#{INSTANCE_PREFIX}-#{i}"
+        vbox.memory = VM_MEMORY
+        vbox.cpus = VM_CPUS
 
-      # Uncoment to add more disks.
-      # file_to_disk = File.join(VAGRANT_ROOT, '.vagrant', 'node2-disk1.vdi')
-      # unless File.exist?(file_to_disk)
-      #   vbox.customize ['createhd', '--filename', file_to_disk, '--size', 500 * 1024]
-      # end
-      # vbox.customize ['storageattach', :id, '--storagectl',
-      #   'SCSI', '--port', 4, '--device', 0, '--type', 'hdd',
-      #   '--medium', file_to_disk]
+        # Uncomment if you want to disable VT-x to use with KVM.
+        # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
+
+        # Uncoment to add more disks.
+        # disk_size_in_mb = 128
+        # disks_total = 4
+        # for j in 1..disks_total
+        #   file_to_disk = File.join(VAGRANT_ROOT, '.vagrant', "#{INSTANCE_PREFIX}-#{i}-disk-#{j}.vdi")
+        #   unless File.exist?(file_to_disk)
+        #     vbox.customize ['createmedium', 'disk',
+        #       '--filename', file_to_disk,
+        #       '--size', disk_size_in_mb,
+        #       '--variant', 'Fixed']
+        #   end
+        #   vbox.customize ['storageattach', :id,
+        #     '--storagectl', 'SCSI',
+        #     '--port', 2 + j - 1,
+        #     '--device', 0,
+        #     '--type', 'hdd',
+        #     '--medium', file_to_disk]
+        # end
+      end
+      machine.vm.hostname = "#{INSTANCE_PREFIX}-#{i}"
+      machine.vm.network "private_network", ip: "#{IP_PREFIX}#{i}"
     end
-    machine.vm.hostname = $node2_hostname
-    machine.vm.network "private_network", ip: $node2_ip_address
   end
+
+  # The controller that will provision other nodes.
   config.vm.define $controller_hostname do |machine|
     machine.vm.provider "virtualbox" do |vbox|
       vbox.name = $controller_hostname
-      vbox.memory = $vbox_memory
-      vbox.cpus = $vbox_cpu
+      vbox.memory = VM_MEMORY
+      vbox.cpus = VM_CPUS
+
       # Uncomment if you want to disable VT-x to use with KVM.
       # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
     end

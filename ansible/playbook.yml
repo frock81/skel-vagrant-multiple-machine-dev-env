@@ -1,3 +1,3 @@
 ---
-- import_playbook: dev-only.yml
-- import_playbook: common.yml
+- import_playbook: play_dev.yml
+- import_playbook: play_node_foo_servers.yml

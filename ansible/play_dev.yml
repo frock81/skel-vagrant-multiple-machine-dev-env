@@ -1,0 +1,70 @@
+---
+- hosts: all
+  roles:
+    - role: robertdebock.bootstrap
+      tags: bootstrap
+  # Use the same values as the Vagrantfile for the next vars.
+  vars:
+    # String to be prefixed to hostnames. 
+    hostname_prefix: node
+    # String to be prefixed to ip addresses
+    ip_prefix: "192.168.4.1"
+    # Generate ips from ip_prefix + instance_start to instance_end
+    instance_start: 1
+    instance_end: 2
+    # Base ip address and name for the controller.
+    # The controller (the one that provisions) will also be the master.
+    ctrl_suffix: ctrl
+    # Must be a string to work.
+    ctrl_unit: "0"
+    # Domain name to be appended.
+    domain_name: localdomain
+    # I added an apt-cacher-ng instance on the development machine to
+    # speed-up things. Leave empty ("") if won't use it.
+    apt_cacher_url: "http://10.0.2.2:3142"
+  tasks:
+    - name: hosts file
+      lineinfile:
+        path: /etc/hosts
+        regexp: "^{{ ip_prefix }}{{ item }}"
+        line: "{{ ip_prefix }}{{ item }} {{
+          hostname_prefix + '-' + ctrl_suffix +'.' + domain_name + ' '
+          + hostname_prefix + '-' + ctrl_suffix
+          if item == ctrl_unit else
+          hostname_prefix + '-' + item + '.' + domain_name + ' '
+          + hostname_prefix + '-' + item }}"
+        state: present
+      with_sequence: start={{ instance_start }} end={{ instance_end }}
+      tags: hosts
+
+    # Causes apt lock acquisition problems.
+    - name: stop apt-daily service
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items:
+        - apt-daily.service
+        - apt-daily.timer
+
+    - name: disable apt-daily service
+      service:
+        name: "{{ item }}"
+        enabled: no
+      with_items:
+        - apt-daily.service
+        - apt-daily.timer
+
+    # To speed-up things in my computer. Comment when done. Re-enable as needed.
+    - name: setup apt-cacher-ng
+      copy:
+        dest: /etc/apt/apt.conf
+        content: |
+          #Acquire::AllowInsecureRepositories true; # Allow to use an offline repo
+          Acquire::http::proxy "{{ apt_cacher_url }}"; # The cache proxy repo
+          Acquire::https::proxy "DIRECT"; # Allow cache proxy SSL repos
+      when: apt_cacher_url | length != 0
+
+    - name: update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 604800

@@ -9,3 +9,6 @@
   roles:
     - role: robertdebock.bootstrap
       tags: bootstrap
+  tasks:
+    - name: my first task
+      debug: msg="Hello World!"

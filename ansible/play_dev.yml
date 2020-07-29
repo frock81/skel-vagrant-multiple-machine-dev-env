@@ -21,7 +21,9 @@
     domain_name: localdomain
     # I added an apt-cacher-ng instance on the development machine to
     # speed-up things. Leave empty ("") if won't use it.
-    apt_cacher_url: "http://10.0.2.2:3142"
+    # Example:
+    #apt_cacher_url: "http://10.0.2.2:3142"
+    apt_cacher_url: ""
   tasks:
     - name: hosts file
       lineinfile:

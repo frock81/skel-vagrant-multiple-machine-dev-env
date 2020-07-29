@@ -32,11 +32,11 @@ IP_PREFIX = "192.168.4.1"
 # one that will provision the other with Ansible (manager). It is useful
 # for mixed environments that uses Linux, Windows, etc and makes it
 # unecessary to have Ansible installed in the machine running Vagrant.
-$controller_hostname = "#{INSTANCE_PREFIX}-ctrl"
+CONTROLLER_HOSTNAME = "#{INSTANCE_PREFIX}-ctrl"
 
 # The IP address for the controller machine. In the default config it
 # will be 192.168.4.10.
-$controller_ip_address = "#{IP_PREFIX}0"
+CONTROLLER_IP_ADDRESS = "#{IP_PREFIX}0"
 
 # Sets guest environment variables.
 # @see https://github.com/hashicorp/vagrant/issues/7015
@@ -89,17 +89,17 @@ Vagrant.configure("2") do |config|
   end
 
   # The controller that will provision other nodes.
-  config.vm.define $controller_hostname do |machine|
+  config.vm.define CONTROLLER_HOSTNAME do |machine|
     machine.vm.provider "virtualbox" do |vbox|
-      vbox.name = $controller_hostname
+      vbox.name = CONTROLLER_HOSTNAME
       vbox.memory = VM_MEMORY
       vbox.cpus = VM_CPUS
 
       # Uncomment if you want to disable VT-x to use with KVM.
       # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
     end
-    machine.vm.hostname = $controller_hostname
-    machine.vm.network "private_network", ip: $controller_ip_address
+    machine.vm.hostname = CONTROLLER_HOSTNAME
+    machine.vm.network "private_network", ip: CONTROLLER_IP_ADDRESS
     # Vault passwords in home dir in order to not leave the key together with
     # the lock (useful to synchronize projects inside Dropbox/Gdrive).
     machine.vm.synced_folder "~/.ansible_secret", \

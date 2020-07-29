@@ -12,15 +12,15 @@ Clone the skel project, rename the cloned directory to the name of your project 
 
 Steps:
 
-1. Create file `~/.ansible_secret/vault_pass_insecure` and put a generic pass in it
 1. Exec `direnv allow`
 1. Provision ip address at `/etc/hosts` in 192.168.4.0 network
 1. Update `Vagrantfile` with node names and ip addresses
 1. Update `ansible/hosts-dev.ini` with node names and ip addresses (use hosts-prod.ini for production hosts)
 1. Update `ansible/requirements.yml` (don't put submodules roles in requirements)
 1. Update `ansible/playbook.yml` (and related playbooks like common.yml and dev-only.yml)
+1. Create secrets (see section named _Secrets_)
 
-Other optional steps:
+Optional steps:
 
 - Put directive config.vm.synced_folder in Vagrantfile for web server projects.
 - Uncomment directive v.customize in Vagrantfile if you want to disable VT-x to use with KVM.
@@ -44,7 +44,7 @@ Substitute the passwords accordingly.
     $ echo 'PRODUCTIONPASSWORD' > ansible/.vault_pass_prod
 ```
 
-If you want different secrets edit _ansible.cfg_ and change `vault_identity_list` to match yout setup. Also modify Vagrantfile as needed (`~/.ansible_secret` synced folder).
+If you want different secrets edit _ansible.cfg_ and change `vault_identity_list` to match your setup. Also modify Vagrantfile as needed (`~/.ansible_secret` synced folder).
 
 The file _vault_pass_insecure_ is used for development and shared between projects, so, as the name suggests, it is not secure to use it in production. It may be changed to a project specific secret located in the ansible project directory.
 
@@ -55,6 +55,8 @@ The secret file _vault_pass_sudo_ is used to store the variable `ansible_become_
     $ ansible-vault create --encrypt-vault-id=sudo group_vars/all/secret-local.yml
 
 The file _secret-local.yml_, **should not** be put in version controle, but if it is by mistake, at least it is encrypted and your peers from the project won't have the password (different from _vault_pass_insecure_ and probably _.vault_pass_prod_).
+
+After setting-up secrets make sure to uncomment the directive `vault_identity_list` and remove the current directive without the `sudo` and `prod` vaults.
 
 ## Running
 

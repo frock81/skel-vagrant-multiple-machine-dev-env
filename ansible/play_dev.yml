@@ -71,3 +71,14 @@
       apt:
         update_cache: yes
         cache_valid_time: 604800
+
+    - name: check apt lists directory to check if it is a new vm
+      shell: "ls -l /var/lib/apt/lists/ | grep -E 'universe|multiverse'"
+      register: result_lists
+      changed_when: False
+      ignore_errors: yes
+
+    - name: update apt cache if it is a new vm
+      apt:
+        update_cache: yes
+      when: result_lists.rc != 0

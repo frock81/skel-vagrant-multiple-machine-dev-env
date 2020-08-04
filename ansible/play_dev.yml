@@ -15,7 +15,8 @@
     # Base ip address and name for the controller.
     # The controller (the one that provisions) will also be the master.
     ctrl_suffix: ctrl
-    # Must be a string to work.
+    # Must be a string to work. The unit (suffix) of the ip address of
+    # the controller machine.
     ctrl_unit: "0"
     # Domain name to be appended.
     domain_name: localdomain

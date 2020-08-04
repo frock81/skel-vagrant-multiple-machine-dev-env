@@ -17,9 +17,10 @@ INSTANCE_PREFIX = "node"
 # be node-0, node-1...
 INSTANCE_START=1
 
-# The last instance index. Will determine the amount of nodes. The
-# default with INSTANCE_START=1 and INSTANCE_END=2 will give two nodes,
-# node-1 and node-2.
+# The last instance index. Will determine the amount of nodes (except
+# for the controller which has it's own section). The default with
+# INSTANCE_START=1 and INSTANCE_END=2 will give two nodes, node-1 and
+# node-2.
 INSTANCE_END = 2
 
 # The prefix for the IP address. The ip address for the machines will be
@@ -58,11 +59,15 @@ Vagrant.configure("2") do |config|
     config.vm.define "#{INSTANCE_PREFIX}-#{i}" do |machine|
       machine.vm.provider "virtualbox" do |vbox|
         vbox.name = "#{INSTANCE_PREFIX}-#{i}"
+        # XXX: move memory and cpus outside the loop.
         vbox.memory = VM_MEMORY
         vbox.cpus = VM_CPUS
 
         # Uncomment if you want to disable VT-x to use with KVM.
         # vbox.customize ["modifyvm", :id, "--hwvirtex", "off"]
+
+        # Uncomment to enable nested virtualization.
+        # vbox.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
 
         # Uncoment to add more disks.
         # disk_size_in_mb = 128
@@ -92,6 +97,7 @@ Vagrant.configure("2") do |config|
   config.vm.define CONTROLLER_HOSTNAME do |machine|
     machine.vm.provider "virtualbox" do |vbox|
       vbox.name = CONTROLLER_HOSTNAME
+      # XXX: move memory and cpus outside the loop.
       vbox.memory = VM_MEMORY
       vbox.cpus = VM_CPUS
 

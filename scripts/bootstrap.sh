@@ -16,9 +16,9 @@ echo '* libraries/restart-without-asking boolean true' \
 # FIXME: this seems to be ineffective since the conditional evaluates
 # to false for the first time.
 # Use recent packages.
-if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -1440)" ]; then
-  sudo apt update --fix-missing && apt -yq upgrade
-fi
+# if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -1440)" ]; then
+#   sudo apt update --fix-missing && apt -yq upgrade
+# fi
 
 # FIXME: this works because the box comes with python3 installed. A
 # better approach would be to inspect lists directory. The first time
@@ -36,18 +36,18 @@ fi
 #
 # In the first vagrant up, python wont be installed. We use this characteristic
 # # to update apt sources file.
-# if ! test -e /usr/bin/python; then
-#   sudo sed -i 's#http://archive.ubuntu.com#http://br.archive.ubuntu.com#g' \
-#     /etc/apt/sources.list
-#   echo "Updating packages list"
-#   sudo apt update
-#   sudo echo "Installing python."
-#   apt install -yq python-minimal python-pip
-# fi
+if ! test -e /usr/bin/python; then
+  sudo sed -i 's#http://archive.ubuntu.com#http://br.archive.ubuntu.com#g' \
+    /etc/apt/sources.list
+  echo "Updating packages list"
+  sudo apt update
+  sudo echo "Installing python."
+  apt install -yq python-minimal python-pip
+fi
 
-# # Install Ansible via Python PIP.
-# echo "Installing Ansible via PIP"
-# test -e /usr/bin/ansible-galaxy || sudo pip install ansible
+# Install Ansible via Python PIP.
+echo "Installing Ansible via PIP"
+test -e /usr/bin/ansible-galaxy || sudo pip install ansible
 
 # Install required roles.
 if [ -r "$ANSIBLE_PATH/requirements.yml" ]; then

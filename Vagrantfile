@@ -11,21 +11,21 @@ VM_CPUS = 2
 VM_MEMORY = 2048
 
 # The prefix for the hostname and virtual machine name.
-INSTANCE_PREFIX = "node"
+INSTANCE_NAME = "foo"
 
-# Start of the nodes. If 0 it will node-0, node-1 and so on. If 1 it will
-# be node-0, node-1...
+# Start of the nodes. If 0 it will foo-0, foo-1 and so on. If 1 it will
+# be foo-0, foo-1...
 INSTANCE_START=1
 
-# The last instance index. Will determine the amount of nodes (except
+# The last instance index. Will determine the amount of foos (except
 # for the controller which has it's own section). The default with
-# INSTANCE_START=1 and INSTANCE_END=2 will give two nodes, node-1 and
-# node-2.
+# INSTANCE_START=1 and INSTANCE_END=2 will give two nodes, foo-1 and
+# foo-2.
 INSTANCE_END = 2
 
 # The prefix for the IP address. The ip address for the machines will be
 # generated using the instance index and the prefix. So in the default
-# confing it will be 192.168.4.11 for node-1, 192.168.4.12 for node-2
+# confing it will be 192.168.4.11 for foo-1, 192.168.4.12 for foo-2
 # and so on.
 IP_PREFIX = "192.168.4.1"
 
@@ -33,7 +33,7 @@ IP_PREFIX = "192.168.4.1"
 # one that will provision the other with Ansible (manager). It is useful
 # for mixed environments that uses Linux, Windows, etc and makes it
 # unecessary to have Ansible installed in the machine running Vagrant.
-CONTROLLER_HOSTNAME = "#{INSTANCE_PREFIX}-ctrl"
+CONTROLLER_HOSTNAME = "#{INSTANCE_NAME}-ctrl"
 
 # The IP address for the controller machine. In the default config it
 # will be 192.168.4.10.
@@ -56,9 +56,9 @@ Vagrant.configure("2") do |config|
   config.vm.box = VAGRANT_BOX
 
   (INSTANCE_START..INSTANCE_END).each do |i|
-    config.vm.define "#{INSTANCE_PREFIX}-#{i}" do |machine|
+    config.vm.define "#{INSTANCE_NAME}-#{i}" do |machine|
       machine.vm.provider "virtualbox" do |vbox|
-        vbox.name = "#{INSTANCE_PREFIX}-#{i}"
+        vbox.name = "#{INSTANCE_NAME}-#{i}"
         # XXX: move memory and cpus outside the loop.
         vbox.memory = VM_MEMORY
         vbox.cpus = VM_CPUS
@@ -69,16 +69,16 @@ Vagrant.configure("2") do |config|
         # Uncomment to enable nested virtualization.
         # vbox.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
 
-        # Uncoment to add more disks.
+        # Uncoment to add more disks. See vboxmanage documentation.
         # disk_size_in_mb = 128
         # disks_total = 4
         # for j in 1..disks_total
-        #   file_to_disk = File.join(VAGRANT_ROOT, '.vagrant', "#{INSTANCE_PREFIX}-#{i}-disk-#{j}.vdi")
+        #   file_to_disk = File.join(VAGRANT_ROOT, '.vagrant', "#{INSTANCE_NAME}-#{i}-disk-#{j}.vdi")
         #   unless File.exist?(file_to_disk)
         #     vbox.customize ['createmedium', 'disk',
         #       '--filename', file_to_disk,
         #       '--size', disk_size_in_mb,
-        #       '--variant', 'Fixed']
+        #       '--variant', 'Standard']
         #   end
         #   vbox.customize ['storageattach', :id,
         #     '--storagectl', 'SCSI',
@@ -88,7 +88,7 @@ Vagrant.configure("2") do |config|
         #     '--medium', file_to_disk]
         # end
       end
-      machine.vm.hostname = "#{INSTANCE_PREFIX}-#{i}"
+      machine.vm.hostname = "#{INSTANCE_NAME}-#{i}"
       machine.vm.network "private_network", ip: "#{IP_PREFIX}#{i}"
     end
   end

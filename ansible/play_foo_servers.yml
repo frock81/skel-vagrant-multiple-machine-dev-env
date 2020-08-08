@@ -1,5 +1,5 @@
 ---
-- hosts: node_foo_servers
+- hosts: foo_servers
 #   pre_tasks:
 #     - name: install mysql role dependency packages
 #       apt:

@@ -1,4 +1,4 @@
-# Skel - Single
+# Skel - Multiple
 
 Skel for a vagrant multiple machine development environment.
 

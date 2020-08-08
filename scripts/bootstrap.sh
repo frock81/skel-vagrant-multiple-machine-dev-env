@@ -35,19 +35,19 @@ fi
 # without that.
 #
 # In the first vagrant up, python wont be installed. We use this characteristic
-# to update apt sources file.
-if ! test -e /usr/bin/python; then
-  sudo sed -i 's#http://archive.ubuntu.com#http://br.archive.ubuntu.com#g' \
-    /etc/apt/sources.list
-  echo "Updating packages list"
-  sudo apt update
-  sudo echo "Installing python."
-  apt install -yq python-minimal python-pip
-fi
+# # to update apt sources file.
+# if ! test -e /usr/bin/python; then
+#   sudo sed -i 's#http://archive.ubuntu.com#http://br.archive.ubuntu.com#g' \
+#     /etc/apt/sources.list
+#   echo "Updating packages list"
+#   sudo apt update
+#   sudo echo "Installing python."
+#   apt install -yq python-minimal python-pip
+# fi
 
-# Install Ansible via Python PIP.
-echo "Installing Ansible via PIP"
-test -e /usr/bin/ansible-galaxy || sudo pip install ansible
+# # Install Ansible via Python PIP.
+# echo "Installing Ansible via PIP"
+# test -e /usr/bin/ansible-galaxy || sudo pip install ansible
 
 # Install required roles.
 if [ -r "$ANSIBLE_PATH/requirements.yml" ]; then

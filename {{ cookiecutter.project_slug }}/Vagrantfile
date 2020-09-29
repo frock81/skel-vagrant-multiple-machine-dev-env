@@ -2,32 +2,32 @@
 # vi: set ft=ruby :
 
 # The box to be used by Vagrant.
-VAGRANT_BOX = "ubuntu/bionic64"
+VAGRANT_BOX = "{{ cookiecutter.vagrant_box }}"
 
 # Number of CPUs allocated to the virtual machine instances.
-VM_CPUS = 2
+VM_CPUS = {{ cookiecutter.vm_cpus }}
 
 # Total of RAM memory in megabytes allocated to the vm instances.
-VM_MEMORY = 2048
+VM_MEMORY = {{ cookiecutter.vm_memory }}
 
 # The prefix for the hostname and virtual machine name.
-INSTANCE_NAME = "foo"
+INSTANCE_NAME = "{{ cookiecutter.vm_name }}"
 
 # Start of the nodes. If 0 it will foo-0, foo-1 and so on. If 1 it will
 # be foo-0, foo-1...
-INSTANCE_START=1
+INSTANCE_START = {{ cookiecutter.instance_start }}
 
 # The last instance index. Will determine the amount of foos (except
 # for the controller which has it's own section). The default with
 # INSTANCE_START=1 and INSTANCE_END=2 will give two nodes, foo-1 and
 # foo-2.
-INSTANCE_END = 2
+INSTANCE_END = {{ cookiecutter.instance_end }}
 
 # The prefix for the IP address. The ip address for the machines will be
 # generated using the instance index and the prefix. So in the default
 # confing it will be 192.168.4.11 for foo-1, 192.168.4.12 for foo-2
 # and so on.
-IP_PREFIX = "192.168.4.1"
+IP_PREFIX = "{{ cookiecutter.ip_prefix }}"
 
 # The virtual machine name and hostname for the controller machine, the
 # one that will provision the other with Ansible (manager). It is useful

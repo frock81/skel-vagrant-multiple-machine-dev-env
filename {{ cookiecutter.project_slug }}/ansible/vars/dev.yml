@@ -1,0 +1,27 @@
+---
+# String to be prefixed to hostnames. 
+hostname_prefix: {{ cookiecutter.vm_name }}
+
+# String to be prefixed to ip addresses
+ip_prefix: "{{ cookiecutter.ip_prefix }}"
+
+# Generate ips from ip_prefix + instance_start to instance_end
+instance_start: {{ cookiecutter.instance_start }}
+instance_end: {{ cookiecutter.instance_end }}
+
+# Base ip address and name for the controller.
+# The controller (the one that provisions) will also be the master.
+ctrl_suffix: ctrl
+
+# Must be a string to work. The unit (suffix) of the ip address of
+# the controller machine.
+ctrl_unit: "0"
+
+# Domain name to be appended.
+domain_name: {{ cookiecutter.domain_name }}
+
+# I added an apt-cacher-ng instance on the development machine to
+# speed-up things. Leave empty ("") if won't use it.
+# Example:
+#apt_cacher_url: "http://10.0.2.2:3142"
+apt_cacher_url: "{{ cookiecutter.apt_cacher_url }}"

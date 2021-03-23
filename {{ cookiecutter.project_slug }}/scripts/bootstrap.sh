@@ -16,17 +16,24 @@ echo '* libraries/restart-without-asking boolean true' \
 
 # Some packages may be missing because the new box doesn't have
 # repositories list, although it is configured in the sources.
-if ! $(ls -lh /var/lib/apt/lists | grep -E "universe|multiverse" &> /dev/null); then
+#
+# Remember that for the first apt there will be no apt-cacher
+# configured via Ansible.
+if ! ! ls *(*universe*|*multiverse*) &> /dev/null
+then
   sudo apt-get update --fix-missing && apt-get -yq upgrade
 fi
 
-if ! $(dpkg -s python3-pip &> /dev/null); then
+# We will use the python3 version.
+if ! dpkg -s python3-pip &> /dev/null; then
   sudo apt-get install -y python3-pip
 fi
 
 # Install Ansible via Python PIP.
 if ! test -e /usr/local/bin/ansible-galaxy; then
   echo "Installing Ansible via Pip"
+  # To avoid a Jinja2 update bug.
+  sudo pip3 install -U Jinja2
   sudo pip3 install ansible
 fi
 

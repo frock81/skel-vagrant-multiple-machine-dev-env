@@ -25,7 +25,7 @@ Optional steps:
 - Put directive config.vm.synced_folder in Vagrantfile for web server projects.
 - Uncomment directive v.customize in Vagrantfile if you want to disable VT-x to use with KVM.
 - Update config.vm.box in Vagrantfile (defaults to ubuntu/bionic64)
-- Uncoment disk related lines to add more disks in Vagrantfile.
+- Uncomment disk related lines to add more disks in Vagrantfile.
 
 ## Secrets
 
